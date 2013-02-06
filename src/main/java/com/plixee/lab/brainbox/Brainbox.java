@@ -1,30 +1,27 @@
 package com.plixee.lab.brainbox;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
-public class Brainbox extends AbstractHandler {
-	@Override
-	public void handle(String target, Request baseRequest,
-			HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		response.setContentType("text/html;charset=utf-8");
-		response.setStatus(HttpServletResponse.SC_OK);
-		baseRequest.setHandled(true);
-		response.getWriter().println("Welcome on Brainbox!");
-	}
+import com.plixee.lab.brainbox.config.WebConfig;
 
+public class Brainbox {
 	public static void main(String[] args) throws Exception {
-		Server server = new Server(8080);
+		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
+		applicationContext.register(WebConfig.class);
 
-		server.setHandler(new Brainbox());
+		ServletHolder servletHolder = new ServletHolder(new DispatcherServlet(
+				applicationContext));
+		ServletContextHandler servletContext = new ServletContextHandler();
+		servletContext.setContextPath("/");
+		servletContext.addServlet(servletHolder, "/*");
+
+		Server server = new Server(9999);
+
+		server.setHandler(servletContext);
 
 		server.start();
 		server.join();
