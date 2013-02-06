@@ -13,8 +13,8 @@ public class Brainbox {
 		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
 		applicationContext.register(WebConfig.class);
 
-		ServletHolder servletHolder = new ServletHolder(new DispatcherServlet(
-				applicationContext));
+		ServletHolder servletHolder = new ServletHolder("brainbox",
+				new DispatcherServlet(applicationContext));
 		ServletContextHandler servletContext = new ServletContextHandler();
 		servletContext.setContextPath("/");
 		servletContext.addServlet(servletHolder, "/*");
