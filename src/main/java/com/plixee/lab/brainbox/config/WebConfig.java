@@ -3,13 +3,17 @@ package com.plixee.lab.brainbox.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import com.plixee.lab.brainbox.controller.HomeController;
+
 @Configuration
-@ComponentScan(basePackages = { "com.plixee.lab.brainbox.controller" })
+@ComponentScan(basePackageClasses = { HomeController.class })
+@Import(AppConfig.class)
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
 	@Bean
