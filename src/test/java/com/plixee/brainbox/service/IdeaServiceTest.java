@@ -2,6 +2,10 @@ package com.plixee.brainbox.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
@@ -16,13 +20,17 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.common.collect.Lists;
 import com.plixee.lab.brainbox.config.AppConfig;
 import com.plixee.lab.brainbox.model.Idea;
+import com.plixee.lab.brainbox.repository.IdeaRepository;
 import com.plixee.lab.brainbox.service.IdeaService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class })
 public class IdeaServiceTest {
+	@Inject
+	private IdeaRepository ideaRepository;
 	@Inject
 	private IdeaService ideaService;
 
@@ -32,6 +40,7 @@ public class IdeaServiceTest {
 	@After
 	public void tearDown() {
 		DateTimeUtils.setCurrentMillisSystem();
+		this.ideaRepository.deleteAll();
 	}
 
 	private Idea generateValidIdea() {
@@ -209,5 +218,77 @@ public class IdeaServiceTest {
 
 		// WHEN
 		this.ideaService.store(idea);
+	}
+
+	@Test
+	public void get_can_retrieve_a_stored_idea() {
+		// GIVEN
+		Idea idea = this.generateValidIdea();
+		idea = this.ideaService.store(idea);
+
+		// WHEN
+		Idea result = this.ideaService.get(idea.getId());
+
+		// THEN
+		assertEquals(idea, result);
+	}
+
+	@Test
+	public void get_an_unexisting_idea_returns_null() {
+		// GIVEN
+		Long id = 89768976L;
+
+		// WHEN
+		Idea idea = this.ideaService.get(id);
+
+		// THEN
+		assertNull(idea);
+	}
+
+	@Test
+	public void get_with_a_null_id_throws_an_exception() {
+		// GIVEN
+
+		// THEN
+		this.expectedException.expect(IllegalArgumentException.class);
+
+		// WHEN
+		this.ideaService.get(null);
+	}
+
+	@Test
+	public void getAll_returns_all_the_ideas() {
+		// GIVEN
+		Idea idea1 = this.ideaService.store(this.generateValidIdea());
+		Idea idea2 = this.ideaService.store(this.generateValidIdea());
+
+		// WHEN
+		List<Idea> ideas = this.ideaService.getAll();
+
+		// THEN
+		assertEquals(2, ideas.size());
+		assertTrue(ideas.containsAll(Lists.newArrayList(idea1, idea2)));
+	}
+
+	@Test
+	public void getAll_orders_the_ideas_by_createdDate_DESC() {
+		// GIVEN
+		DateTime now = new DateTime();
+
+		Idea idea1 = this.generateValidIdea();
+		idea1.setCreatedDate(now);
+		idea1 = this.ideaService.store(idea1);
+
+		Idea idea2 = this.generateValidIdea();
+		idea2.setCreatedDate(now.plusDays(3));
+		idea2 = this.ideaService.store(idea2);
+
+		// WHEN
+		List<Idea> ideas = this.ideaService.getAll();
+
+		// THEN
+		assertEquals(2, ideas.size());
+		assertEquals(idea2, ideas.get(0));
+		assertEquals(idea1, ideas.get(1));
 	}
 }
