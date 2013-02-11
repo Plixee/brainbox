@@ -21,7 +21,7 @@ import com.plixee.lab.brainbox.controller.HomeController;
 
 @Configuration
 @ComponentScan(basePackageClasses = { ApiController.class, HomeController.class })
-@Import(AppConfig.class)
+@Import({ AppConfig.class, SecurityConfig.class })
 @EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
 	@Bean
