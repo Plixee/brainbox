@@ -13,15 +13,15 @@
 		</div>
 		<div class="row-fluid">
 			<div class="span4">
-				<form>
+				<form action="/" method="post">
 					<fieldset>
 						<legend>Post an idea</legend>
 						<label for="input-author">Author</label>
-						<input type="text" id="input-author" class="span12" placeholder="Chuck Norris" />
+						<input type="text" id="input-author" name="author" class="span12" placeholder="Chuck Norris" />
 						<label for="input-title">Idea</label>
-						<input type="text" id="input-title" class="span12" placeholder="Send a poney to the moon" />
+						<input type="text" id="input-title" name="title" class="span12" placeholder="Send a poney to the moon" />
 						<label for="input-description">Description</label>
-						<textarea id="input-description" class="span12" placeholder="Because poneys are great!" rows="5"></textarea>
+						<textarea id="input-description" name="description" class="span12" placeholder="Because poneys are great!" rows="5"></textarea>
 						<div class="form-actions">
 							<button type="submit" class="btn btn-primary">Post</button>
 							<button type="reset" class="btn">Cancel</button>
@@ -31,36 +31,13 @@
 			</div>
 			<div class="span8">
 				<ul class="media-list">
+					<#list ideas as idea>
 					<li class="media">
-		  				<h4 class="media-heading">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
-						<p class="muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		  				<small class="pull-right">by <strong>Chuck Norris</strong></small>
+		  				<h4 class="media-heading">${idea.title}</h4>
+						<p class="muted">${idea.description}</p>
+		  				<small class="pull-right">by <strong>${idea.author}</strong> the ${idea.createdDate.toString("MM/dd/yy' at 'HH:mm")}</small>
 					</li>
-					<li class="media">
-		  				<h4 class="media-heading">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
-						<p class="muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		  				<small class="pull-right">by <strong>Chuck Norris</strong></small>
-					</li>
-					<li class="media">
-		  				<h4 class="media-heading">Lorem ipsum dolor sit amet, consectetur adipisicing elit</h4>
-						<p class="muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-						cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-						proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		  				<small class="pull-right">by <strong>Chuck Norris</strong></small>
-					</li>
+					</#list>
 				</ul>
 			</div>
 		</div>
