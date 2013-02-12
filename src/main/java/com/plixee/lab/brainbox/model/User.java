@@ -1,5 +1,7 @@
 package com.plixee.lab.brainbox.model;
 
+import java.util.Collection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,12 +11,18 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.collect.Lists;
 
 @Entity
 @Table(name = "brainbox_user")
-public class User {
+public class User implements UserDetails {
+	private static final long serialVersionUID = -1386857928070789131L;
+
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -42,6 +50,7 @@ public class User {
 		this.name = name;
 	}
 
+	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -85,6 +94,36 @@ public class User {
 				return false;
 		} else if (!password.equals(other.password))
 			return false;
+		return true;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Lists.newArrayList(new SimpleGrantedAuthority("ROLE_USER"));
+	}
+
+	@Override
+	public String getUsername() {
+		return this.name;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
 		return true;
 	}
 }

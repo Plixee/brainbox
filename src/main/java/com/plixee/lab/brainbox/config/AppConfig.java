@@ -21,12 +21,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.plixee.lab.brainbox.repository.IdeaRepository;
 import com.plixee.lab.brainbox.repository.UserRepository;
 import com.plixee.lab.brainbox.service.IdeaService;
+import com.plixee.lab.brainbox.service.LoginService;
 import com.plixee.lab.brainbox.service.PopulateService;
 import com.plixee.lab.brainbox.service.UserService;
 
 @Configuration
-@ComponentScan(basePackageClasses = { IdeaService.class, PopulateService.class,
-		UserService.class })
+@ComponentScan(basePackageClasses = { IdeaService.class, LoginService.class,
+		PopulateService.class, UserService.class })
 @EnableJpaRepositories(basePackageClasses = { IdeaRepository.class,
 		UserRepository.class })
 @EnableTransactionManagement

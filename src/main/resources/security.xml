@@ -7,17 +7,14 @@
 	http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<http auto-config="true">
-		<intercept-url pattern="/api/**" access="ROLE_USER" />
 		<intercept-url pattern="/**" access="ROLE_ANONYMOUS, ROLE_USER" />
 		<form-login />
 		<logout />
 	</http>
 	
 	<authentication-manager>
-		<authentication-provider>
-			<user-service>
-				<user name="chuck" password="returnkick" authorities="ROLE_USER" />
-			</user-service>
+		<authentication-provider user-service-ref="loginService">
+			<password-encoder ref="standardPasswordEncoder" />
 		</authentication-provider>
 	</authentication-manager>
 </beans:beans>

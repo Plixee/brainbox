@@ -23,27 +23,33 @@
 	<div class="container">
 		<div class="row">
 			<ul class="nav nav-pills pull-right">
+			  <#if user??>
+			  <li class="disabled">
+			  	<a href="#">Connected as ${user.name}</a>
+			  </li>
+			  <li>
+			  	<a href="/j_spring_security_logout">Logout</a>
+			  </li>
+			  <#else>
 			  <li>
 			    <a href="#modalLogin" data-toggle="modal">Login</a>
 			  </li>
 			  <li>
 			    <a href="#modalSignUp" data-toggle="modal">Sign up</a>
 			  </li>
-			  <li class="disabled">
-			  	<a href="#">Connected as Chuck Norris</a>
-			  </li>
-			  <li>
-			  	<a href="/j_spring_security_logout">Logout</a>
-			  </li>
+			  </#if>
 			</ul>
 		</div>
 
 		<div class="hero-unit">
 			<h1>Brainbox</h1>
 			<p class="lead">The suggestion box</p>
+			<#if user??>
 			<p><a href="#modalIdea" class="btn btn-primary btn-large" data-toggle="modal">Post an idea</a></p>
+			</#if>
 		</div>
 		<div class="row-fluid">
+			<#if !user??>
 			<div class="alert alert-info">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 				<p><strong>Tip</strong>: If you want to post an idea, you have to be authenticated.</p>
@@ -57,6 +63,7 @@
 					</dl>
 				</p>
 			</div>
+			</#if>
 			<div class="offset2 span8">
 				<ul class="media-list">
 					<#list ideas as idea>
@@ -82,8 +89,6 @@
 			</div>
 			<div class="modal-body">
 				<div class="row-fluid">
-					<label for="input-author">Author</label>
-					<input type="text" class="span12" id="input-author" name="author" placeholder="Chuck Norris" data-trigger="change" data-rangelength="[2,32]" data-validation-minlength="1" required="required"/>
 					<label for="input-title">Idea</label>
 					<input type="text" class="span12" id="input-title" name="title"  placeholder="Send a poney to the moon" data-trigger="keyup" data-maxlength="140" required="required"/>
 					<label for="input-description">Description</label>
