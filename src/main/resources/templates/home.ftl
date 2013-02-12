@@ -14,9 +14,6 @@
 		line-height: 1em;
 		margin: 0.5em;
 	}
-	#footer {
-		height: 60px;
-	}
 	</style>
 </head>
 <body>
@@ -25,7 +22,7 @@
 			<ul class="nav nav-pills pull-right">
 			  <#if user??>
 			  <li class="disabled">
-			  	<a href="#">Connected as <strong>${user.name}</strong></a>
+			  	<a href="">Connected as <strong>${user.name}</strong></a>
 			  </li>
 			  <li>
 			  	<a href="/j_spring_security_logout">Logout</a>
@@ -64,13 +61,20 @@
 				</p>
 			</div>
 			</#if>
-			<div class="offset2 span8">
+			<div class="offset1 span10">
 				<ul class="media-list">
 					<#list ideas as idea>
-					<li class="media well">
-						<h4 class="media-heading">${idea.title}</h4>
-						<p class="muted">${idea.description}</p>
-						<small class="pull-right">by <strong>${idea.author.name}</strong> the ${idea.createdDate.toString("MM/dd/yy' at 'HH:mm")}</small>
+					<li class="media">
+						<div class="btn-group btn-group-vertical pull-left">
+							<a class="btn btn-link" href=""><i class="icon-chevron-up"></i></a>
+							<span class="btn disabled"><strong>0</strong></span>
+							<a class="btn btn-link" href=""><i class="icon-chevron-down"></i></a>
+						</div>
+						<div class="media-body well">
+							<h4 class="media-heading">${idea.title}</h4>
+							<p class="muted">${idea.description}</p>
+							<small class="pull-right">by <strong>${idea.author.name}</strong> the ${idea.createdDate.toString("MM/dd/yy' at 'HH:mm")}</small>
+						</div>
 					</li>
 					</#list>
 				</ul>
