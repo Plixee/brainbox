@@ -25,7 +25,7 @@
 			<ul class="nav nav-pills pull-right">
 			  <#if user??>
 			  <li class="disabled">
-			  	<a href="#">Connected as ${user.name}</a>
+			  	<a href="#">Connected as <strong>${user.name}</strong></a>
 			  </li>
 			  <li>
 			  	<a href="/j_spring_security_logout">Logout</a>
