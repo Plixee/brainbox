@@ -7,8 +7,10 @@
 	http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<http auto-config="true">
-		<intercept-url pattern="/api/**" access="ROLE_USER"/>
-		<intercept-url pattern="/**" access="ROLE_ANONYMOUS"/>
+		<intercept-url pattern="/api/**" access="ROLE_USER" />
+		<intercept-url pattern="/**" access="ROLE_ANONYMOUS, ROLE_USER" />
+		<form-login />
+		<logout />
 	</http>
 	
 	<authentication-manager>

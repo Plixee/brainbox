@@ -24,10 +24,11 @@ public class Brainbox {
 		ServletHolder servletHolder = new ServletHolder("brainbox",
 				new DispatcherServlet(applicationContext));
 
-		ServletContextHandler servletContext = new ServletContextHandler();
+		ServletContextHandler servletContext = new ServletContextHandler(null,
+				"/", true, false);
 		servletContext.addEventListener(new ContextLoaderListener(
 				applicationContext));
-		servletContext.setContextPath("/");
+		// servletContext.setContextPath("/");
 		servletContext.addServlet(servletHolder, "/*");
 
 		// Spring Security
