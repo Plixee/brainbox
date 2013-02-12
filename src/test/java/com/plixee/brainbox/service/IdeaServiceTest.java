@@ -48,8 +48,14 @@ public class IdeaServiceTest {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	private void emptyDatabase() {
+		this.ideaRepository.deleteAll();
+		this.userRepository.deleteAll();
+	}
+	
 	@Before
 	public void setUp() {
+		this.emptyDatabase();
 		this.user = TestUtils.generateValidUser();
 		this.user = this.userService.store(user);
 	}
@@ -57,8 +63,7 @@ public class IdeaServiceTest {
 	@After
 	public void tearDown() {
 		DateTimeUtils.setCurrentMillisSystem();
-		this.ideaRepository.deleteAll();
-		this.userRepository.deleteAll();
+		this.emptyDatabase();
 	}
 
 	private Idea generateValidIdea() {
