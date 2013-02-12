@@ -2,7 +2,6 @@ package com.plixee.lab.brainbox.controller;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Controller;
@@ -18,22 +17,6 @@ import com.plixee.lab.brainbox.service.IdeaService;
 @Controller
 @RequestMapping(value = "/api")
 public class ApiController {
-	@PostConstruct
-	public void setUp() {
-		// TODO remove this fake populate
-		Idea idea1 = new Idea();
-		idea1.setAuthor("Chuck Norris");
-		idea1.setTitle("Send a poney to the moon");
-		idea1.setDescription("Because poneys are great!");
-		this.ideaService.store(idea1);
-
-		Idea idea2 = new Idea();
-		idea2.setAuthor("Nyan Cat");
-		idea2.setTitle("Nyanyanyanyan");
-		idea2.setDescription("Nyanyan nyanyan nyanyanyan!");
-		this.ideaService.store(idea2);
-	}
-
 	@Inject
 	private IdeaService ideaService;
 

@@ -28,7 +28,6 @@ public class Brainbox {
 				"/", true, false);
 		servletContext.addEventListener(new ContextLoaderListener(
 				applicationContext));
-		// servletContext.setContextPath("/");
 		servletContext.addServlet(servletHolder, "/*");
 
 		// Spring Security
@@ -40,7 +39,8 @@ public class Brainbox {
 				EnumSet.allOf(DispatcherType.class));
 
 		// Server
-		Server server = new Server(9999);
+		int port = 9999;
+		Server server = new Server(port);
 		server.setHandler(servletContext);
 		server.start();
 		server.join();

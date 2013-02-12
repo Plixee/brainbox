@@ -13,6 +13,7 @@ import javax.validation.ConstraintViolationException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -22,30 +23,47 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.common.collect.Lists;
 import com.plixee.lab.brainbox.config.AppConfig;
+import com.plixee.lab.brainbox.config.SecurityConfig;
 import com.plixee.lab.brainbox.model.Idea;
+import com.plixee.lab.brainbox.model.User;
 import com.plixee.lab.brainbox.repository.IdeaRepository;
+import com.plixee.lab.brainbox.repository.UserRepository;
 import com.plixee.lab.brainbox.service.IdeaService;
+import com.plixee.lab.brainbox.service.UserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppConfig.class })
+@ContextConfiguration(classes = { AppConfig.class, SecurityConfig.class })
 public class IdeaServiceTest {
 	@Inject
 	private IdeaRepository ideaRepository;
 	@Inject
 	private IdeaService ideaService;
+	@Inject
+	private UserRepository userRepository;
+	@Inject
+	private UserService userService;
+
+	private User user;
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+
+	@Before
+	public void setUp() {
+		this.user = TestUtils.generateValidUser();
+		this.user = this.userService.store(user);
+	}
 
 	@After
 	public void tearDown() {
 		DateTimeUtils.setCurrentMillisSystem();
 		this.ideaRepository.deleteAll();
+		this.userRepository.deleteAll();
 	}
 
 	private Idea generateValidIdea() {
 		Idea idea = new Idea();
-		idea.setAuthor("Chuck Norris");
+		idea.setAuthor(this.user);
 		idea.setCreatedDate(new DateTime());
 		idea.setTitle("Send a poney to the moon");
 		idea.setDescription("Because poneys are great!");
@@ -108,32 +126,6 @@ public class IdeaServiceTest {
 	}
 
 	@Test
-	public void when_an_idea_is_stored_with_an_author_with_less_than_2_characters_an_exception_is_thrown() {
-		// GIVEN
-		Idea idea = this.generateValidIdea();
-		idea.setAuthor("a");
-
-		// THEN
-		this.expectedException.expect(ConstraintViolationException.class);
-
-		// WHEN
-		this.ideaService.store(idea);
-	}
-
-	@Test
-	public void when_an_idea_is_stored_with_an_author_with_more_than_32_characters_an_exception_is_thrown() {
-		// GIVEN
-		Idea idea = this.generateValidIdea();
-		idea.setAuthor(this.generateString(35));
-
-		// THEN
-		this.expectedException.expect(ConstraintViolationException.class);
-
-		// WHEN
-		this.ideaService.store(idea);
-	}
-
-	@Test
 	public void when_an_idea_is_stored_with_a_null_title_an_exception_is_thrown() {
 		// GIVEN
 		Idea idea = this.generateValidIdea();
@@ -159,19 +151,11 @@ public class IdeaServiceTest {
 		this.ideaService.store(idea);
 	}
 
-	private String generateString(int length) {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < length; i++) {
-			sb.append('a');
-		}
-		return sb.toString();
-	}
-
 	@Test
 	public void when_an_idea_is_stored_with_a_title_with_more_than_140_characters_an_exception_is_thrown() {
 		// GIVEN
 		Idea idea = this.generateValidIdea();
-		idea.setTitle(this.generateString(150));
+		idea.setTitle(TestUtils.generateString(150));
 
 		// THEN
 		this.expectedException.expect(ConstraintViolationException.class);
@@ -184,7 +168,7 @@ public class IdeaServiceTest {
 	public void when_an_idea_is_stored_with_a_description_with_1000_characters_it_is_not_truncated() {
 		// GIVEN
 		Idea idea = this.generateValidIdea();
-		String description = this.generateString(1000);
+		String description = TestUtils.generateString(1000);
 		idea.setDescription(description);
 
 		// WHEN
@@ -198,7 +182,7 @@ public class IdeaServiceTest {
 	public void when_an_idea_is_stored_with_a_description_with_more_than_1000_characters_an_exception_is_thrown() {
 		// GIVEN
 		Idea idea = this.generateValidIdea();
-		idea.setDescription(this.generateString(1002));
+		idea.setDescription(TestUtils.generateString(1002));
 
 		// THEN
 		this.expectedException.expect(ConstraintViolationException.class);

@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -20,8 +21,8 @@ public class Idea {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 	@NotNull
-	@Size(min = 2, max = 32)
-	private String author;
+	@ManyToOne
+	private User author;
 	@NotNull
 	@Size(min = 1, max = 140)
 	private String title;
@@ -52,11 +53,11 @@ public class Idea {
 		}
 	}
 
-	public String getAuthor() {
+	public User getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(String author) {
+	public void setAuthor(User author) {
 		this.author = author;
 	}
 
