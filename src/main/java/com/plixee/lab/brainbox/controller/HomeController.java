@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -49,9 +50,14 @@ public class HomeController {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public String postIdea(Model model, Idea idea) {
-		User author = this.loginService.getConnectedUser();
-		idea.setAuthor(author);
-		this.ideaService.store(idea);
+		User user = this.loginService.getConnectedUser();
+		if (user == null) {
+			model.addAttribute("error",
+					"You have to be connected to post an idea.");
+		} else {
+			idea.setAuthor(user);
+			this.ideaService.store(idea);
+		}
 		return this.getHome(model);
 	}
 
@@ -72,5 +78,29 @@ public class HomeController {
 				.setAttribute(
 						HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 						SecurityContextHolder.getContext());
+	}
+
+	@RequestMapping(value = "/ideas/{id}/plus")
+	public String plus(Model model, @PathVariable Long id) {
+		User user = this.loginService.getConnectedUser();
+		if (user == null) {
+			model.addAttribute("error",
+					"You have to be connected to \"plus\" an idea.");
+		} else {
+			this.ideaService.plus(id, user.getId());
+		}
+		return this.getHome(model);
+	}
+
+	@RequestMapping(value = "/ideas/{id}/minus")
+	public String minus(Model model, @PathVariable Long id) {
+		User user = this.loginService.getConnectedUser();
+		if (user == null) {
+			model.addAttribute("error",
+					"You have to be connected to \"minus\" an idea.");
+		} else {
+			this.ideaService.minus(id, user.getId());
+		}
+		return this.getHome(model);
 	}
 }

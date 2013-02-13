@@ -38,6 +38,13 @@
 			</ul>
 		</div>
 
+		<#if error??>
+		<div class="alert alert-error">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<p><strong>Error:</strong> ${error}</p>
+		</div>
+		</#if>
+
 		<div class="hero-unit">
 			<h1>Brainbox</h1>
 			<p class="lead">The suggestion box</p>
@@ -66,9 +73,17 @@
 					<#list ideas as idea>
 					<li class="media">
 						<div class="btn-group btn-group-vertical pull-left">
-							<a class="btn btn-link" href=""><i class="icon-chevron-up"></i></a>
-							<span class="btn disabled"><strong>0</strong></span>
-							<a class="btn btn-link" href=""><i class="icon-chevron-down"></i></a>
+							<#if user??>
+							<a class="btn btn-link" href="/ideas/${idea.id}/plus"><i class="icon-chevron-up"></i></a>
+							<#else>
+							<a class="btn btn-link" href="#modalLogin" data-toggle="modal"><i class="icon-chevron-up"></i></a>
+							</#if>
+							<span class="btn disabled"><strong>${idea.plus?size - idea.minus?size}</strong></span>
+							<#if user??>
+							<a class="btn btn-link" href="/ideas/${idea.id}/minus"><i class="icon-chevron-down"></i></a>
+							<#else>
+							<a class="btn btn-link" href="#modalLogin" data-toggle="modal"><i class="icon-chevron-down"></i></a>
+							</#if>
 						</div>
 						<div class="media-body well">
 							<h4 class="media-heading">${idea.title}</h4>

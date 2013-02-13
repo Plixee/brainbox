@@ -1,8 +1,8 @@
 package com.plixee.brainbox.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.google.common.collect.Lists;
 import com.plixee.lab.brainbox.config.AppConfig;
 import com.plixee.lab.brainbox.config.SecurityConfig;
+import com.plixee.lab.brainbox.exception.ResourceNotFoundException;
 import com.plixee.lab.brainbox.model.Idea;
 import com.plixee.lab.brainbox.model.User;
 import com.plixee.lab.brainbox.repository.IdeaRepository;
@@ -52,7 +53,7 @@ public class IdeaServiceTest {
 		this.ideaRepository.deleteAll();
 		this.userRepository.deleteAll();
 	}
-	
+
 	@Before
 	public void setUp() {
 		this.emptyDatabase();
@@ -210,42 +211,6 @@ public class IdeaServiceTest {
 	}
 
 	@Test
-	public void get_can_retrieve_a_stored_idea() {
-		// GIVEN
-		Idea idea = this.generateValidIdea();
-		idea = this.ideaService.store(idea);
-
-		// WHEN
-		Idea result = this.ideaService.get(idea.getId());
-
-		// THEN
-		assertEquals(idea, result);
-	}
-
-	@Test
-	public void get_an_unexisting_idea_returns_null() {
-		// GIVEN
-		Long id = 89768976L;
-
-		// WHEN
-		Idea idea = this.ideaService.get(id);
-
-		// THEN
-		assertNull(idea);
-	}
-
-	@Test
-	public void get_with_a_null_id_throws_an_exception() {
-		// GIVEN
-
-		// THEN
-		this.expectedException.expect(IllegalArgumentException.class);
-
-		// WHEN
-		this.ideaService.get(null);
-	}
-
-	@Test
 	public void getAll_returns_all_the_ideas() {
 		// GIVEN
 		Idea idea1 = this.ideaService.store(this.generateValidIdea());
@@ -279,5 +244,107 @@ public class IdeaServiceTest {
 		assertEquals(2, ideas.size());
 		assertEquals(idea2, ideas.get(0));
 		assertEquals(idea1, ideas.get(1));
+	}
+
+	@Test
+	public void plus_an_idea_adds_the_user_to_the_plus_set() {
+		// GIVEN
+		Idea idea = this.ideaService.store(generateValidIdea());
+
+		// WHEN
+		Idea result = this.ideaService.plus(idea.getId(), user.getId());
+
+		// THEN
+		assertTrue(result.getPlus().contains(user));
+	}
+
+	@Test
+	public void minus_an_idea_adds_the_user_to_the_minus_set() {
+		// GIVEN
+		Idea idea = this.ideaService.store(generateValidIdea());
+
+		// WHEN
+		Idea result = this.ideaService.minus(idea.getId(), user.getId());
+
+		// THEN
+		assertTrue(result.getMinus().contains(user));
+	}
+
+	@Test
+	public void plus_a_minussed_idea_adds_the_user_to_the_plus_set_and_removes_him_from_the_minus_set() {
+		// GIVEN
+		Idea idea = this.ideaService.store(generateValidIdea());
+		idea = this.ideaService.minus(idea.getId(), user.getId());
+
+		// WHEN
+		Idea result = this.ideaService.plus(idea.getId(), user.getId());
+
+		// THEN
+		assertTrue(result.getPlus().contains(user));
+		assertFalse(result.getMinus().contains(user));
+	}
+
+	@Test
+	public void minus_a_plussed_idea_adds_the_user_to_the_minus_set_and_removes_him_from_the_plus_set() {
+		// GIVEN
+		Idea idea = this.ideaService.store(generateValidIdea());
+		idea = this.ideaService.plus(idea.getId(), user.getId());
+
+		// WHEN
+		Idea result = this.ideaService.minus(idea.getId(), user.getId());
+
+		// THEN
+		assertTrue(result.getMinus().contains(user));
+		assertFalse(result.getPlus().contains(user));
+	}
+
+	@Test
+	public void plus_an_unexisting_idea_throws_an_exception() {
+		// GIVEN
+		Long ideaId = 4564556678L;
+
+		// THEN
+		this.expectedException.expect(ResourceNotFoundException.class);
+
+		// WHEN
+		this.ideaService.plus(ideaId, user.getId());
+	}
+
+	@Test
+	public void minus_an_unexisting_idea_throws_an_exception() {
+		// GIVEN
+		Long ideaId = 549876453L;
+
+		// THEN
+		this.expectedException.expect(ResourceNotFoundException.class);
+
+		// WHEN
+		this.ideaService.minus(ideaId, user.getId());
+	}
+
+	@Test
+	public void plus_with_an_unexisting_user_throws_an_exception() {
+		// GIVEN
+		Idea idea = this.ideaService.store(generateValidIdea());
+		Long userId = 8754654L;
+
+		// THEN
+		this.expectedException.expect(ResourceNotFoundException.class);
+
+		// WHEN
+		this.ideaService.plus(idea.getId(), userId);
+	}
+
+	@Test
+	public void minus_with_an_unexisting_user_throws_an_exception() {
+		// GIVEN
+		Idea idea = this.ideaService.store(generateValidIdea());
+		Long userId = 4566953L;
+
+		// THEN
+		this.expectedException.expect(ResourceNotFoundException.class);
+
+		// WHEN
+		this.ideaService.minus(idea.getId(), userId);
 	}
 }
