@@ -53,7 +53,8 @@ public class IdeaService {
 	private Idea getIdea(Long ideaId) {
 		Idea idea = this.ideaRepository.findOne(ideaId);
 		if (idea == null) {
-			throw new ResourceNotFoundException();
+			throw new ResourceNotFoundException("The Idea#" + ideaId
+					+ " cannot be found.");
 		}
 		return idea;
 	}
@@ -61,7 +62,8 @@ public class IdeaService {
 	private User getUser(Long userId) {
 		User user = this.userRepository.findOne(userId);
 		if (user == null) {
-			throw new ResourceNotFoundException();
+			throw new ResourceNotFoundException("The User#" + userId
+					+ " cannot be found.");
 		}
 		return user;
 	}
